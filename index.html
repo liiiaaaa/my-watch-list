@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Watch List</title>
+
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Moirai+One&family=Archivo+Black&family=Archivo:wght@500;600;700&family=Italiana&display=swap');
+    :root {
+      --bg: #FFDFAF;
+      --ink: #2A2520;
+      --ink-soft: #7A6E62;
+      --line: #E8E0D5;
+      --accent: #FF9800;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Fraunces', Georgia, serif;
+      background: #fff8f0;
+      color: var(--ink);
+      line-height: 1.5;
+      padding: 2rem 1.25rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1 {
+      font-family: 'Moirai One', serif;
+      font-size: 75px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+  padding: 1rem 0.25rem 2.5rem;
+
+      margin-bottom: 0.5rem;
+    }
+
+    body > p {
+      color: var(--ink-soft);
+      margin-bottom: 3rem;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .tab {
+      background: none; border: none;
+      padding: 0.5rem 0;
+      font-family: ‘Archivo Black’, sans-serif;
+      font-size: 1.75rem;
+      color: rgba(255, 152, 0, 0.45);
+      cursor: pointer;
+      text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s;
+    }
+    .tab:hover { color: rgba(255, 152, 0, 0.8); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* Filters */
+ .filters {
+      padding: 1.25rem 0;
+      margin-bottom: 3rem;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 0.75rem;
+    }
+
+    .filter-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .filter-label {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      opacity: 0.3;
+      color: #d4602a;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      align-items: baseline;
+    }
+
+    .chip {
+      font-family: 'Archivo', sans-serif;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #d4602a;
+      opacity: 0.3;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      border-bottom: 3px solid transparent;
+      padding: 0 0 3px 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-style: normal;
+    }
+
+    .chip:hover {
+      opacity: 0.7;
+      color: #e87840;
+    }
+
+    .chip.active {
+      color: #e87840;
+      opacity: 1;
+      border-bottom: 3px solid #e87840;
+    }
+
+    /* Slash separator between chips */
+    .chip:not(:last-child)::after {
+      content: '/';
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+      opacity: 0.5;
+      color: #d4602a;
+      display: inline-block;
+      pointer-events: none;
+      border-bottom: none;
+    }   
+
+ .filter-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+    }
+    .surprise-btn {
+      background: #ebe9eb;
+      color: var(--bg);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .surprise-btn:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+    }
+    .count {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    /* Moodboard grid (horizontal scroll) */
+    .grid {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 1rem;
+      margin-bottom: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .grid::-webkit-scrollbar { display: none; }
+
+    .card {
+      flex: 0 0 45%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      scroll-snap-align: start;
+      transition: transform 0.4s;
+    }
+    @media (min-width: 640px) { .card { flex: 0 0 28%; } }
+    @media (min-width: 900px) { .card { flex: 0 0 20%; } }
+
+    .card.highlighted { transform: scale(1.05); }
+    .card.highlighted .poster { box-shadow: 0 0 0 4px var(--accent); }
+
+    .poster {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      background-color: var(--line);
+      background-size: cover;
+      background-position: center;
+      border-radius: 4px;
+      transition: opacity 0.4s ease, box-shadow 0.4s;
+      opacity: 0;
+    }
+    .poster.loaded { opacity: 1; }
+    .poster.no-poster {
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    .meta { display: flex; flex-direction: column; gap: 0.1rem; }
+    .title { font-size: 0.95rem; line-height: 1.25; font-weight: 500; }
+    .year { font-size: 0.8rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+    .era-tag { color: var(--ink-soft); font-style: italic; }
+
+    .empty {
+      font-style: italic;
+      color: var(--ink-soft);
+      padding: 2rem 0;
+    }
+  /* Surprise Me overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 37, 32, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.2s ease;
+    }
+
+    .overlay.hidden { display: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .overlay-content {
+      background: var(--bg);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .overlay-label {
+      font-family: 'Fraunces', serif;
+font-size: 1.2rem;
+      color: var(--ink-soft);
+      margin-bottom: 1rem;
+    }
+
+    .overlay-poster {
+      width: 200px;
+      aspect-ratio: 2 / 3;
+      background-color: var(--line);
+      background-size: cover;
+      background-position: center;
+      border-radius: 6px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .overlay-title {
+      font-family: 'Georgia', serif;
+      font-size: 1.5rem;
+      line-height: 1.15;
+      color: black;
+      margin-bottom: 0.5rem;
+    }
+
+    .overlay-meta {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    .overlay-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .overlay-btn-primary, .overlay-btn-secondary {
+      font-family: 'Georgia', serif;
+padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-family: 'Archivo Black', serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .overlay-btn-primary {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .overlay-btn-primary:hover { background: var(--accent); }
+
+    .overlay-btn-secondary {
+     font-family: 'Georgia', serif;
+ background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--ink);
+    }
+    .overlay-btn-secondary:hover { background: var(--ink); color: var(--bg); }
+.surprise-btn {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .surprise-text {
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      transition: max-width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+    }
+
+    .surprise-btn:hover .surprise-text {
+      max-width: 200px;
+      opacity: 1;
+      margin-left: 0.4rem;
+    }
+/* Watched state */
+    .card { cursor: pointer; transition: opacity 0.3s; }
+    .card:hover { opacity: 0.85; }
+
+    .card.watched { opacity: 0.4; }
+    .card.watched:hover { opacity: 0.55; }
+    .card.watched .poster { filter: grayscale(0.7); }
+    .card.watched .title { text-decoration: line-through; color: var(--ink-soft); }
+
+    /* Show-watched toggle */
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle input { cursor: pointer; }
+.overlay-content { position: relative; }
+
+    .overlay-close-x {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      color: var(--ink-soft);
+      font-size: 1.75rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.15s;
+    }
+
+    .overlay-close-x:hover {
+      color: #FF9800;
+    }
+.tab[data-type="Watched"] { margin-left: auto; }
+/* Home view */
+    body.home-mode .tabs,
+    body.home-mode .filters {
+      display: none;
+    }
+
+    /* Home view — moodboard collage */
+    .home-collage {
+      position: relative;
+      margin-top: 1rem;
+      min-height: 800px;
+    }
+
+    .collage-item {
+      position: absolute;
+      width: 22%;
+      max-width: 240px;
+      transition: transform 0.3s ease;
+    }
+
+    .collage-item .poster {
+      width: 100%;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      border-radius: 2px;
+    }
+
+    .collage-item:nth-child(1)  { top: 0%;  left: 5%;  transform: rotate(-3deg); z-index: 1; }
+    .collage-item:nth-child(2)  { top: 8%;  left: 22%; transform: rotate(2deg);  z-index: 2; }
+    .collage-item:nth-child(3)  { top: 2%;  left: 40%; transform: rotate(-2deg); z-index: 3; }
+    .collage-item:nth-child(4)  { top: 10%; left: 58%; transform: rotate(3deg);  z-index: 4; }
+    .collage-item:nth-child(5)  { top: 4%;  left: 75%; transform: rotate(-4deg); z-index: 5; }
+    .collage-item:nth-child(6)  { top: 38%; left: 12%; transform: rotate(-3deg); z-index: 6; }
+    .collage-item:nth-child(7)  { top: 42%; left: 30%; transform: rotate(2deg);  z-index: 7; }
+    .collage-item:nth-child(8)  { top: 38%; left: 48%; transform: rotate(-2deg); z-index: 8; }
+    .collage-item:nth-child(9)  { top: 44%; left: 66%; transform: rotate(4deg);  z-index: 9; }
+    .collage-item:nth-child(10) { top: 70%; left: 20%; transform: rotate(-3deg); z-index: 10; }
+    .collage-item:nth-child(11) { top: 72%; left: 48%; transform: rotate(2deg);  z-index: 11; }
+
+    .collage-item:hover { z-index: 100 !important; }
+    .collage-item:hover .poster { transform: scale(1.05); }
+
+    @media (max-width: 640px) {
+      .home-collage { min-height: 600px; }
+      .collage-item { width: 38%; }
+      .collage-item:nth-child(1)  { top: 0%;  left: 2%;  }
+      .collage-item:nth-child(2)  { top: 8%;  left: 32%; }
+      .collage-item:nth-child(3)  { top: 2%;  left: 60%; }
+      .collage-item:nth-child(4)  { top: 25%; left: 10%; }
+      .collage-item:nth-child(5)  { top: 28%; left: 45%; }
+      .collage-item:nth-child(6)  { top: 32%; left: 75%; }
+      .collage-item:nth-child(7)  { top: 50%; left: 5%;  }
+      .collage-item:nth-child(8)  { top: 52%; left: 35%; }
+      .collage-item:nth-child(9)  { top: 55%; left: 65%; }
+      .collage-item:nth-child(10) { top: 75%; left: 15%; }
+      .collage-item:nth-child(11) { top: 78%; left: 50%; }
+    }
+/* Ciclos */
+    body.ciclos-mode .filters { display: none; }
+
+    .ciclo { margin-bottom: 3rem; }
+
+    .ciclo h3 {
+      font-family: 'Archivo Black', serif;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .ciclo-description {
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      max-width: 500px;
+    }
+
+    .ciclo-why {
+      font-size: 0.75rem;
+      font-style: italic;
+      margin-top: 0.2rem;
+      line-height: 1.35;
+    }
+/* Ciclo watched state — orange overlay, grey meta */
+    .ciclo-card .poster { position: relative; }
+
+    .ciclo-card.ciclo-watched .poster::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      opacity: 0.5;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .ciclo-card.ciclo-watched .title,
+    .ciclo-card.ciclo-watched .year,
+    .ciclo-card.ciclo-watched .ciclo-why {
+      color: var(--ink-soft);
+    }
+/* Alt h1 style for non-home tabs (Movies, Series, Ciclos, Watched) */
+    body:not(.home-mode) h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3.5rem, 12vw, 7rem);
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: -0.025em;
+      line-height: 0.95;
+      margin-top: 0.5rem;
+      margin-bottom: 2.5rem;
+      font-variation-settings: 'opsz' 144;
+    }
+
+    body:not(.home-mode) .title-mark {
+      display: none;
+    }
+
+.tab[data-type="Ciclos"] {
+      font-family: 'Italiana', serif;
+      font-size: 2.25rem;
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
+ /* Ciclos: dark editorial mode */
+     body {
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.ciclos-mode {
+      background: #2A2520;
+      color: #F2F2F2;
+    }
+
+    body.ciclos-mode .ciclo-description,
+    body.ciclos-mode .year,
+    body.ciclos-mode .ciclo-why {
+      color: #B8B0A4;
+    }
+
+    body.ciclos-mode .ciclo h3,
+    body.ciclos-mode h1 {
+      color: #FFC4EB; 
+    }
+/* Bitmap divider — three orange tones */
+    #content > h3:not(:first-child)::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 36px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 36'><rect x='0' y='0' width='6' height='6' fill='%23FF9800'/><rect x='36' y='0' width='6' height='6' fill='%23D26B2C'/><rect x='48' y='0' width='6' height='6' fill='%23FF9800'/><rect x='72' y='0' width='6' height='6' fill='%23FFCEA6'/><rect x='108' y='0' width='6' height='6' fill='%23FF9800'/><rect x='132' y='0' width='6' height='6' fill='%23D26B2C'/><rect x='12' y='12' width='6' height='6' fill='%23D26B2C'/><rect x='24' y='12' width='6' height='6' fill='%23FF9800'/><rect x='48' y='12' width='6' height='6' fill='%23FFCEA6'/><rect x='60' y='12' width='6' height='6' fill='%23FF9800'/><rect x='84' y='12' width='6' height='6' fill='%23D26B2C'/><rect x='96' y='12' width='6' height='6' fill='%23FF9800'/><rect x='120' y='12' width='6' height='6' fill='%23FFCEA6'/><rect x='0' y='24' width='6' height='6' fill='%23FFCEA6'/><rect x='12' y='24' width='6' height='6' fill='%23FF9800'/><rect x='36' y='24' width='6' height='6' fill='%23D26B2C'/><rect x='60' y='24' width='6' height='6' fill='%23FF9800'/><rect x='72' y='24' width='6' height='6' fill='%23FFCEA6'/><rect x='96' y='24' width='6' height='6' fill='%23FF9800'/><rect x='132' y='24' width='6' height='6' fill='%23D26B2C'/></svg>");
+      background-repeat: repeat-x;
+      background-position: center;
+      margin: 2.5rem 0 2rem;
+    }
+
+/* Ciclos tab pink on hover (from any tab) */
+    .tab[data-type="Ciclos"]:hover {
+      color: #FFC4EB;
+    }
+
+    /* When in Ciclos mode — everything goes pink */
+    body.ciclos-mode .tab {
+      color: rgba(255, 196, 235, 0.45);
+    }
+
+    body.ciclos-mode .tab:hover {
+      color: rgba(255, 196, 235, 0.8);
+    }
+
+    body.ciclos-mode .tab.active {
+      color: #FFC4EB;
+      border-bottom-color: #FFC4EB;
+    }
+
+    body.ciclos-mode h1 {
+      color: #FFC4EB;
+    }
+</style>
+</head>
+<body>
+
+  <h1>Watch List</h1>
+
+  <div class="tabs">
+   <button class="tab" data-type="Movie">Movies</button>
+    <button class="tab" data-type="Series">Series</button>
+    <button class="tab" data-type="Ciclos">Ciclos</button>
+    <button class="tab" data-type="Watched">Watched</button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <div class="filter-label">Category</div>
+      <div class="chips" id="category-chips"></div>
+    </div>
+
+    <div class="filter-group" id="era-group">
+      <div class="filter-label">Era</div>
+      <div class="chips" id="era-chips"></div>
+    </div>
+<div class="filter-actions">
+      <span class="count" id="result-count"></span>
+      <button class="surprise-btn" id="surprise-btn">
+        <span class="surprise-emoji">🎲</span>
+        <span class="surprise-text">Surprise me</span>
+      </button>
+    </div>
+</div>
+
+<div id="content"></div>
+
+ <div id="surprise-overlay" class="overlay hidden">
+    <div class="overlay-content">
+      <button class="overlay-close-x" id="overlay-close" aria-label="Close">×</button>
+      <div class="overlay-label">What about this one?</div>
+      <div class="overlay-poster" id="overlay-poster"></div>
+      <div class="overlay-title" id="overlay-title"></div>
+      <div class="overlay-meta" id="overlay-meta"></div>
+      <div class="overlay-actions">
+        <button class="overlay-btn-secondary" id="overlay-roll-again">Roll again 🎲</button>
+      </div>
+    </div>
+  </div>
+  <script>
+
+    const TMDB_API_KEY = "2eb56c59812008f2b5eea7b900b4fc0d";
+// ===== WATCHED STATE (saved per device) =====
+    const WATCHED_KEY = 'watchlist-watched';
+
+    function getWatched() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(WATCHED_KEY) || '[]'));
+      } catch {
+        return new Set();
+      }
+    }
+
+    function saveWatched(set) {
+      localStorage.setItem(WATCHED_KEY, JSON.stringify([...set]));
+    }
+
+    function isWatched(id) {
+      return getWatched().has(id);
+    }
+
+    function toggleWatched(id) {
+      const watched = getWatched();
+      if (watched.has(id)) watched.delete(id); else watched.add(id);
+      saveWatched(watched);
+    }
+    const watchlist = [
+  // ========== MOVIES ==========
+
+  // --- Adventure ---
+  { title: "The Princess Bride", year: 1987, category: "Adventure", era: "80s to 00s", type: "Movie" },
+  { title: "Indiana Jones: Raiders of the Lost Ark", year: 1981, category: "Adventure", era: "80s to 00s", type: "Movie" },
+  { title: "Stand By Me", year: 1986, category: "Adventure", era: "80s to 00s", type: "Movie" },
+
+  { title: "Pan's Labyrinth", year: 2006, category: "Adventure", era: "00s to 2010", type: "Movie" },
+  { title: "Into the Wild", year: 2007, category: "Adventure", era: "00s to 2010", type: "Movie" },
+
+  { title: "The Secret Life of Walter Mitty", year: 2013, category: "Adventure", era: "2011 to 2020", type: "Movie" },
+  { title: "Life of Pi", year: 2012, category: "Adventure", era: "2011 to 2020", type: "Movie" },
+  { title: "Jojo Rabbit", year: 2019, category: "Adventure", era: "2011 to 2020", type: "Movie" },
+  { title: "Argo", year: 2012, category: "Adventure", era: "2011 to 2020", type: "Movie" },
+  { title: "Dunkirk", year: 2017, category: "Adventure", era: "2011 to 2020", type: "Movie" },
+  { title: "Mad Max: Fury Road", year: 2015, category: "Adventure", era: "2011 to 2020", type: "Movie" },
+
+  { title: "The Lost City", year: 2022, category: "Adventure", era: "2020 to nowadays", type: "Movie" },
+  { title: "Nomadland", year: 2020, category: "Adventure", era: "2020 to nowadays", type: "Movie" },
+  { title: "Society of the Snow", year: 2023, category: "Adventure", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Comedy ---
+  { title: "Radio Days", year: 1987, category: "Comedy", era: "80s to 00s", type: "Movie" },
+  { title: "Pret-a-Porter", year: 1994, category: "Comedy", era: "80s to 00s", type: "Movie" },
+  { title: "Groundhog Day", year: 1993, category: "Comedy", era: "80s to 00s", type: "Movie" },
+  { title: "When Harry Met Sally", year: 1989, category: "Comedy", era: "80s to 00s", type: "Movie" },
+  { title: "Mujeres al Borde de un Ataque de Nervios", year: 1988, category: "Comedy", era: "80s to 00s", type: "Movie" },
+  { title: "Everyone Says I Love You", year: 1996, category: "Comedy", era: "80s to 00s", type: "Movie" },
+  { title: "La niña de tus ojos", year: 1998, category: "Comedy", era: "80s to 00s", type: "Movie" },
+
+  { title: "Chicago", year: 2002, category: "Comedy", era: "00s to 2010", type: "Movie" },
+  { title: "Little Miss Sunshine", year: 2006, category: "Comedy", era: "00s to 2010", type: "Movie" },
+  { title: "Juno", year: 2007, category: "Comedy", era: "00s to 2010", type: "Movie" },
+  { title: "In Bruges", year: 2008, category: "Comedy", era: "00s to 2010", type: "Movie" },
+
+  { title: "The Grand Budapest Hotel", year: 2014, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "What We Do in the Shadows", year: 2014, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "Moonrise Kingdom", year: 2012, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "Relatos salvajes", year: 2014, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "The Rum Diary", year: 2011, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "Struck by Lightning", year: 2012, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "Don Jon", year: 2013, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "The World's End", year: 2013, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "The Man from U.N.C.L.E.", year: 2015, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "Sin hijos", year: 2015, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+  { title: "Una semana en Córcega", year: 2015, category: "Comedy", era: "2011 to 2020", type: "Movie" },
+
+  { title: "Palm Springs", year: 2020, category: "Comedy", era: "2020 to nowadays", type: "Movie" },
+  { title: "Bottoms", year: 2023, category: "Comedy", era: "2020 to nowadays", type: "Movie" },
+  { title: "The Menu", year: 2022, category: "Comedy", era: "2020 to nowadays", type: "Movie" },
+  { title: "Theater Camp", year: 2023, category: "Comedy", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Drama ---
+  { title: "Blow-Up", year: 1966, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "The Shawshank Redemption", year: 1994, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "Gia", year: 1998, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "Magnolia", year: 1999, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "Good Will Hunting", year: 1997, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "Todo Sobre Mi Madre", year: 1999, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "Dead Poets Society", year: 1989, category: "Drama", era: "80s to 00s", type: "Movie" },
+
+  { title: "Breakfast on Pluto", year: 2005, category: "Drama", era: "00s to 2010", type: "Movie" },
+  { title: "Factory Girl", year: 2006, category: "Drama", era: "00s to 2010", type: "Movie" },
+  { title: "Desert Flower", year: 2009, category: "Drama", era: "00s to 2010", type: "Movie" },
+  { title: "Mar Adentro", year: 2004, category: "Drama", era: "00s to 2010", type: "Movie" },
+  { title: "Half Nelson", year: 2006, category: "Drama", era: "00s to 2010", type: "Movie" },
+  { title: "Hable con ella", year: 2002, category: "Drama", era: "00s to 2010", type: "Movie" },
+
+  { title: "A Separation", year: 2011, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Manchester by the Sea", year: 2016, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Boyhood", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "The Florida Project", year: 2017, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Frances Ha", year: 2012, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Magical Girl", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Amy", year: 2015, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Los niños salvajes", year: 2012, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Tengo ganas de ti", year: 2012, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Zero Dark Thirty", year: 2012, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Les Misérables", year: 2012, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Attila Marcel", year: 2013, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Inside Llewyn Davis", year: 2013, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Crystal Fairy and the Magical Cactus", year: 2013, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Historia de mi muerte", year: 2013, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "The Wolf of Wall Street", year: 2013, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "A Most Wanted Man", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Mr. Turner", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Carmina y amén", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Calvary", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Selma", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Maps to the Stars", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Learning to Drive", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Camp X-Ray", year: 2014, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "The Dressmaker", year: 2015, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "The Straight Story", year: 1999, category: "Drama", era: "80s to 00s", type: "Movie" },
+  { title: "El bailarín del desierto", year: 2015, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Los héroes del mal", year: 2015, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Los exiliados románticos", year: 2015, category: "Drama", era: "2011 to 2020", type: "Movie" },
+  { title: "Un día perfecto", year: 2015, category: "Drama", era: "2011 to 2020", type: "Movie" },
+
+  { title: "Aftersun", year: 2022, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+  { title: "The Worst Person in the World", year: 2021, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+  { title: "Cinco Lobitos", year: 2022, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+  { title: "Miocardio", year: 2024, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+  { title: "Alas blancas", year: 2023, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+  { title: "Rita", year: 2024, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+  { title: "El secreto del orfebre", year: 2025, category: "Drama", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Romance ---
+  { title: "Jules et Jim", year: 1962, category: "Romance", era: "80s to 00s", type: "Movie" },
+  { title: "Dangerous Liaisons", year: 1988, category: "Romance", era: "80s to 00s", type: "Movie" },
+  { title: "Before Sunrise", year: 1995, category: "Romance", era: "80s to 00s", type: "Movie" },
+  { title: "Báilame el agua", year: 2000, category: "Romance", era: "80s to 00s", type: "Movie" },
+  { title: "Eternal Sunshine of the Spotless Mind", year: 2004, category: "Romance", era: "80s to 00s", type: "Movie" },
+
+  { title: "Rent", year: 2005, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "Paris, je t'aime", year: 2006, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "La vie en rose", year: 2007, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "Before Sunset", year: 2004, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "A Single Man", year: 2009, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "Coco Chanel & Igor Stravinsky", year: 2009, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "New York, I Love You", year: 2009, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "(500) Days of Summer", year: 2009, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "Amor y otras drogas", year: 2010, category: "Romance", era: "00s to 2010", type: "Movie" },
+  { title: "Los nombres del amor", year: 2010, category: "Romance", era: "00s to 2010", type: "Movie" },
+
+  { title: "The Big Sick", year: 2017, category: "Romance", era: "2011 to 2020", type: "Movie" },
+  { title: "Anna Karenina", year: 2012, category: "Romance", era: "2011 to 2020", type: "Movie" },
+  { title: "In Secret", year: 2013, category: "Romance", era: "2011 to 2020", type: "Movie" },
+  { title: "Very Good Girls", year: 2013, category: "Romance", era: "2011 to 2020", type: "Movie" },
+  { title: "Two Days, One Night", year: 2014, category: "Romance", era: "2011 to 2020", type: "Movie" },
+
+  { title: "Past Lives", year: 2023, category: "Romance", era: "2020 to nowadays", type: "Movie" },
+  { title: "Portrait of a Lady on Fire", year: 2020, category: "Romance", era: "2020 to nowadays", type: "Movie" },
+  { title: "Rye Lane", year: 2023, category: "Romance", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Science Fiction ---
+  { title: "The Matrix", year: 1999, category: "Science Fiction", era: "80s to 00s", type: "Movie" },
+  { title: "Minority Report", year: 2002, category: "Science Fiction", era: "80s to 00s", type: "Movie" },
+
+  { title: "Children of Men", year: 2006, category: "Science Fiction", era: "00s to 2010", type: "Movie" },
+  { title: "Moon", year: 2009, category: "Science Fiction", era: "00s to 2010", type: "Movie" },
+
+  { title: "Arrival", year: 2016, category: "Science Fiction", era: "2011 to 2020", type: "Movie" },
+  { title: "Ex Machina", year: 2014, category: "Science Fiction", era: "2011 to 2020", type: "Movie" },
+  { title: "Lucy", year: 2014, category: "Science Fiction", era: "2011 to 2020", type: "Movie" },
+
+  { title: "The Creator", year: 2023, category: "Science Fiction", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Fantasy ---
+  { title: "Spirited Away", year: 2001, category: "Fantasy", era: "80s to 00s", type: "Movie" },
+
+  { title: "The Fall", year: 2006, category: "Fantasy", era: "00s to 2010", type: "Movie" },
+  { title: "Howl's Moving Castle", year: 2004, category: "Fantasy", era: "00s to 2010", type: "Movie" },
+  { title: "Pan's Labyrinth", year: 2006, category: "Fantasy", era: "00s to 2010", type: "Movie" },
+
+  { title: "A Monster Calls", year: 2016, category: "Fantasy", era: "2011 to 2020", type: "Movie" },
+  { title: "A Girl Walks Home Alone at Night", year: 2014, category: "Fantasy", era: "2011 to 2020", type: "Movie" },
+  { title: "Frankenweenie", year: 2012, category: "Fantasy", era: "2011 to 2020", type: "Movie" },
+  { title: "Maleficent", year: 2014, category: "Fantasy", era: "2011 to 2020", type: "Movie" },
+
+  { title: "The Green Knight", year: 2021, category: "Fantasy", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Thriller ---
+  { title: "Se7en", year: 1995, category: "Thriller", era: "80s to 00s", type: "Movie" },
+  { title: "The Silence of the Lambs", year: 1991, category: "Thriller", era: "80s to 00s", type: "Movie" },
+  { title: "Memento", year: 2000, category: "Thriller", era: "80s to 00s", type: "Movie" },
+
+  { title: "Zodiac", year: 2007, category: "Thriller", era: "00s to 2010", type: "Movie" },
+  { title: "No Country for Old Men", year: 2007, category: "Thriller", era: "00s to 2010", type: "Movie" },
+  { title: "Match Point", year: 2005, category: "Thriller", era: "00s to 2010", type: "Movie" },
+  { title: "Diario de un escándalo", year: 2006, category: "Thriller", era: "00s to 2010", type: "Movie" },
+  { title: "Incautos", year: 2004, category: "Thriller", era: "00s to 2010", type: "Movie" },
+
+  { title: "Gone Girl", year: 2014, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Nightcrawler", year: 2014, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Parasite", year: 2019, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Contratiempo", year: 2016, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Molly's Game", year: 2017, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Prisoners", year: 2013, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Force Majeure", year: 2014, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "Filth", year: 2013, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "The Guest", year: 2014, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+  { title: "A Most Violent Year", year: 2014, category: "Thriller", era: "2011 to 2020", type: "Movie" },
+
+  { title: "Saltburn", year: 2023, category: "Thriller", era: "2020 to nowadays", type: "Movie" },
+  { title: "Anatomy of a Fall", year: 2023, category: "Thriller", era: "2020 to nowadays", type: "Movie" },
+  { title: "As Bestas", year: 2022, category: "Thriller", era: "2020 to nowadays", type: "Movie" },
+
+  // --- Feel Good ---
+  { title: "Big", year: 1988, category: "Feel Good", era: "80s to 00s", type: "Movie" },
+  { title: "Cinema Paradiso", year: 1988, category: "Feel Good", era: "80s to 00s", type: "Movie" },
+
+  { title: "Love Actually", year: 2003, category: "Feel Good", era: "00s to 2010", type: "Movie" },
+  { title: "The September Issue", year: 2009, category: "Feel Good", era: "00s to 2010", type: "Movie" },
+
+  { title: "Paddington 2", year: 2017, category: "Feel Good", era: "2011 to 2020", type: "Movie" },
+  { title: "Sing Street", year: 2016, category: "Feel Good", era: "2011 to 2020", type: "Movie" },
+  { title: "Mr. Holmes", year: 2015, category: "Feel Good", era: "2011 to 2020", type: "Movie" },
+  { title: "Into the Woods", year: 2014, category: "Feel Good", era: "2011 to 2020", type: "Movie" },
+
+  { title: "CODA", year: 2021, category: "Feel Good", era: "2020 to nowadays", type: "Movie" },
+  { title: "Flora and Son", year: 2023, category: "Feel Good", era: "2020 to nowadays", type: "Movie" },
+
+  // ========== TV SERIES (2020–2026) ==========
+
+  // --- Adventure ---
+  { title: "The Last of Us", year: 2023, category: "Adventure", era: "2020 to 2026", type: "Series" },
+  { title: "Andor", year: 2022, category: "Adventure", era: "2020 to 2026", type: "Series" },
+  { title: "Shōgun", year: 2024, category: "Adventure", era: "2020 to 2026", type: "Series" },
+  { title: "Our Flag Means Death", year: 2022, category: "Adventure", era: "2020 to 2026", type: "Series" },
+
+  // --- Comedy ---
+  { title: "Overcompensating", year: 2025, category: "Comedy", era: "2020 to 2026", type: "Series" },
+  { title: "The Bear", year: 2022, category: "Comedy", era: "2020 to 2026", type: "Series" },
+  { title: "Fleabag", year: 2016, category: "Comedy", era: "2020 to 2026", type: "Series" },
+  { title: "Master of None", year: 2015, category: "Comedy", era: "2020 to 2026", type: "Series" },
+
+  // --- Drama ---
+  { title: "Adolescence", year: 2025, category: "Drama", era: "2020 to 2026", type: "Series" },
+  { title: "Beef", year: 2023, category: "Drama", era: "2020 to 2026", type: "Series" },
+  { title: "Broadchurch", year: 2013, category: "Drama", era: "2020 to 2026", type: "Series" },
+
+  // --- Romance ---
+  { title: "Normal People", year: 2020, category: "Romance", era: "2020 to 2026", type: "Series" },
+  { title: "Heartstopper", year: 2022, category: "Romance", era: "2020 to 2026", type: "Series" },
+
+  // --- Science Fiction ---
+  { title: "Severance", year: 2022, category: "Science Fiction", era: "2020 to 2026", type: "Series" },
+  { title: "Silo", year: 2023, category: "Science Fiction", era: "2020 to 2026", type: "Series" },
+  { title: "Scavengers Reign", year: 2023, category: "Science Fiction", era: "2020 to 2026", type: "Series" },
+
+  // --- Fantasy ---
+  { title: "The Sandman", year: 2022, category: "Fantasy", era: "2020 to 2026", type: "Series" },
+  { title: "Good Omens", year: 2020, category: "Fantasy", era: "2020 to 2026", type: "Series" },
+  { title: "Wednesday", year: 2022, category: "Fantasy", era: "2020 to 2026", type: "Series" },
+
+  // --- Thriller ---
+  { title: "The Night Agent", year: 2023, category: "Thriller", era: "2020 to 2026", type: "Series" },
+  { title: "Bodies", year: 2023, category: "Thriller", era: "2020 to 2026", type: "Series" },
+
+  // --- Feel Good ---
+  { title: "Ted Lasso", year: 2020, category: "Feel Good", era: "2020 to 2026", type: "Series" },
+  { title: "Shrinking", year: 2023, category: "Feel Good", era: "2020 to 2026", type: "Series" },
+];
+
+    // ===== STATE =====
+  const state = {
+      activeTab: "Home",
+      selectedCategories: new Set(),
+      selectedEras: new Set()
+    };
+    const posterCache = {};
+
+    function getItemId(item) {
+      return `${item.type}-${item.title}-${item.year}`.replace(/[^a-zA-Z0-9]/g, "-");
+    }
+
+    // ===== FILTERING =====
+    function getFiltered() {
+      return watchlist.filter(item => {
+        const id = getItemId(item);
+        const watched = isWatched(id);
+
+        if (state.activeTab === 'Watched') {
+          if (!watched) return false;
+        } else {
+          if (item.type !== state.activeTab) return false;
+          if (watched) return false;
+        }
+
+        if (state.selectedCategories.size > 0 && !state.selectedCategories.has(item.category)) return false;
+        if (state.activeTab !== 'Watched' && state.selectedEras.size > 0 && !state.selectedEras.has(item.era)) return false;
+
+        return true;
+      });
+    }
+
+    // ===== HOME VIEW =====
+    // ===== CICLOS DATA =====
+    const ciclos = [
+      {
+        name: "Billy Wilder — The Sharpest Mind in Hollywood",
+        description: "A director's full arc across noir, comedy and drama — united by savage wit, moral ambiguity, and an unmatched ear for dialogue. The ideal first director ciclo: every film is a pleasure, none of them are difficult.",
+        films: [
+          { title: "Double Indemnity", year: 1944, why: "Where it begins: the definitive noir, and proof that Wilder could make darkness feel irresistible." },
+          { title: "Sunset Boulevard", year: 1950, why: "Hollywood eating itself alive. One of the greatest films ever made, and his darkest." },
+          { title: "Ace in the Hole", year: 1951, why: "His most cynical film and his most prophetic: media manipulation as spectacle. Shockingly modern." },
+          { title: "Stalag 17", year: 1953, why: "A POW camp comedy-thriller that shouldn't work at all. It does, completely." },
+          { title: "The Seven Year Itch", year: 1955, why: "Lighter Wilder, but the Marilyn Monroe sequences are cinema history." },
+          { title: "Love in the Afternoon", year: 1957, why: "Wilder meets Audrey: romantic, elegant, and funnier than it looks." },
+          { title: "Some Like It Hot", year: 1959, why: "Widely considered the greatest comedy ever made. It earns that title." },
+          { title: "The Apartment", year: 1960, why: "His masterpiece. A film about loneliness dressed up as a romantic comedy. You will cry." },
+          { title: "Irma la Douce", year: 1963, why: "Wilder and Jack Lemmon at their most loose and playful. A palate cleanser after The Apartment." },
+          { title: "The Private Life of Sherlock Holmes", year: 1970, why: "Underseen, tender, melancholy. A surprising final note to a brilliant career." }
+        ]
+      },
+      {
+        name: "Audrey Hepburn — Grace as a Way of Being",
+        description: "Not just a star ciclo — a portrait of a particular kind of female presence: intelligent, vulnerable, luminous. Follows her from ingénue to fully formed actress across fifteen years of Hollywood's most elegant era.",
+        films: [
+          { title: "Roman Holiday", year: 1953, why: "Her debut and her Oscar. The perfect entry point to understand everything that follows." },
+          { title: "Sabrina", year: 1954, why: "Her first collaboration with Wilder: a Cinderella story with more edge than it lets on." },
+          { title: "Funny Face", year: 1957, why: "Audrey as a bookish girl swept into the world of fashion. Visually ravishing, genuinely charming." },
+          { title: "Love in the Afternoon", year: 1957, why: "Quieter and more melancholy than it appears. One of her most underrated performances." },
+          { title: "The Nun's Story", year: 1959, why: "The film that proved she was more than charm. Rigorous, emotional, surprising." },
+          { title: "Breakfast at Tiffany's", year: 1961, why: "The iconic one. Holly Golightly is one of cinema's great characters." },
+          { title: "Charade", year: 1963, why: "Hitchcock-style thriller with Cary Grant. Pure fun, impeccably made." },
+          { title: "My Fair Lady", year: 1964, why: "Her most epic film: a musical about transformation, class and voice. Magnificent." },
+          { title: "Two for the Road", year: 1967, why: "The most modern film in the ciclo: a fractured, non-linear love story. Feels like it was made in 2005." },
+          { title: "Wait Until Dark", year: 1967, why: "She plays a blind woman terrorised at home. Tense, brave, completely against type." }
+        ]
+      },
+      {
+        name: "Women Who Ran the Room — Hollywood 1945–1971",
+        description: "A thematic journey through classic Hollywood via its most complex, ambitious female characters — not damsels, not sidekicks, but women who drive every scene they're in. Surprisingly contemporary in feeling, essential as cinema history.",
+        films: [
+          { title: "Brief Encounter", year: 1945, why: "A married woman, a chance meeting, an impossible love. Restrained and devastating. The template for every romantic drama that followed." },
+          { title: "Mildred Pierce", year: 1945, why: "Joan Crawford at her most ferocious: a self-made woman undone by her own ambition and her daughter. Noir dressed as melodrama." },
+          { title: "All About Eve", year: 1950, why: "The sharpest film ever made about ambition, ageing and female rivalry. Every line is a weapon." },
+          { title: "Gentlemen Prefer Blondes", year: 1953, why: "Marilyn Monroe and Jane Russell running rings around every man in the film. Funnier and smarter than its reputation." },
+          { title: "Rear Window", year: 1954, why: "Hitchcock's most playful thriller, with Grace Kelly as the most glamorous person ever to appear on screen." },
+          { title: "Imitation of Life", year: 1959, why: "A melodrama about race, identity and maternal love that will wreck you. Lana Turner, but the film belongs to Juanita Moore." },
+          { title: "The Children's Hour", year: 1961, why: "Audrey Hepburn and Shirley MacLaine in a film about a lesbian relationship accusation that was radical for its time and still stings." },
+          { title: "The L-Shaped Room", year: 1962, why: "A single woman, pregnant and alone in a London bedsit. Quiet, truthful, British kitchen-sink at its most humane." },
+          { title: "Bonnie and Clyde", year: 1967, why: "Faye Dunaway rewrites what a female lead can be: dangerous, sexual, fully alive. The film that broke old Hollywood open." },
+          { title: "Klute", year: 1971, why: "Jane Fonda's career-defining performance as a call girl navigating a murder investigation. The most modern film in the ciclo by far." }
+        ]
+      }
+    ];
+
+    function renderCiclos() {
+      let html = '';
+      for (const ciclo of ciclos) {
+        html += `<div class="ciclo">`;
+        html += `<h3>${ciclo.name}</h3>`;
+        html += `<p class="ciclo-description">${ciclo.description}</p>`;
+        html += `<div class="grid">`;
+        for (const film of ciclo.films) {
+          const item = { ...film, type: 'Movie' };
+          const id = getItemId(item);
+          const isW = isWatched(id);
+          html += `
+            <div class="card ciclo-card${isW ? ' ciclo-watched' : ''}" data-id="${id}">
+              <div class="poster" id="poster-${id}"></div>
+              <div class="meta">
+                <div class="title">${film.title}</div>
+                <div class="year">${film.year}</div>
+                <div class="ciclo-why">${film.why}</div>
+              </div>
+            </div>
+          `;
+        }
+        html += `</div></div>`;
+      }
+
+      document.getElementById('content').innerHTML = html;
+
+      for (const ciclo of ciclos) {
+        for (const film of ciclo.films) {
+          applyPoster({ ...film, type: 'Movie' });
+        }
+      }
+    }
+
+function renderHome() {
+      const shuffled = [...watchlist].sort(() => Math.random() - 0.5);
+      const picks = shuffled.slice(0, 11);
+
+      let html = '<div class="home-collage">';
+      for (const item of picks) {
+        const id = getItemId(item);
+        html += `<div class="collage-item"><div class="poster" id="poster-${id}"></div></div>`;
+      }
+      html += '</div>';
+
+      document.getElementById('content').innerHTML = html;
+
+      for (const item of picks) {
+        applyPoster(item);
+      }
+    }
+
+    function switchToTab(tabType) {
+      document.querySelectorAll('.tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.type === tabType);
+      });
+      state.activeTab = tabType;
+      state.selectedEras.clear();
+      renderEraChips();
+      render();
+    }
+
+// ===== RENDERING =====
+   function render() {
+      document.body.classList.toggle('home-mode', state.activeTab === 'Home');
+      document.body.classList.toggle('ciclos-mode', state.activeTab === 'Ciclos');
+
+      if (state.activeTab === 'Home') {
+        renderHome();
+        document.getElementById('result-count').textContent = '';
+        return;
+      }
+
+      if (state.activeTab === 'Ciclos') {
+        renderCiclos();
+        document.getElementById('result-count').textContent = '';
+        return;
+      }
+
+      const filtered = getFiltered();
+
+      const grouped = {};
+      for (const item of filtered) {
+        if (!grouped[item.category]) grouped[item.category] = [];
+        grouped[item.category].push(item);
+      }
+
+      let html = "";
+      if (filtered.length === 0) {
+        html = `<p class="empty">No matches. Try removing a filter.</p>`;
+      } else {
+        for (const category in grouped) {
+          html += `<h3>${category}</h3><div class="grid">`;
+          for (const item of grouped[category]) {
+            const id = getItemId(item);
+            const watched = isWatched(id);
+            const showAsWatched = watched && state.activeTab !== 'Watched';
+            html += `
+              <div class="card${showAsWatched ? ' watched' : ''}" data-id="${id}" title="Tap to mark watched/unwatched">
+                <div class="poster" id="poster-${id}"></div>
+                <div class="meta">
+      <div class="title">${item.title}</div>
+                  <div class="year">${item.year} · <span class="era-tag">${item.era}</span></div>
+                </div>
+              </div>
+            `;
+          }
+          html += `</div>`;
+        }
+      }
+
+      document.getElementById('content').innerHTML = html;
+
+      for (const item of filtered) applyPoster(item);
+
+      if (state.activeTab === 'Watched') {
+        const count = filtered.length;
+        document.getElementById('result-count').textContent =
+          count === 1 ? '1 title' : `${count} titles`;
+      } else {
+        document.getElementById('result-count').textContent = '';
+      };
+    }
+
+    function renderCategoryChips() {
+      const categories = [...new Set(watchlist.map(i => i.category))];
+      document.getElementById('category-chips').innerHTML = categories.map(cat =>
+        `<button class="chip${state.selectedCategories.has(cat) ? ' active' : ''}" data-category="${cat}">${cat}</button>`
+      ).join('');
+    }
+
+    function renderEraChips() {
+      const eraGroup = document.getElementById('era-group');
+
+      if (state.activeTab === 'Watched') {
+        eraGroup.style.display = 'none';
+        return;
+      }
+
+      const eras = [...new Set(watchlist.filter(i => i.type === state.activeTab).map(i => i.era))];
+      if (eras.length <= 1) {
+        eraGroup.style.display = 'none';
+      } else {
+        eraGroup.style.display = '';
+        document.getElementById('era-chips').innerHTML = eras.map(era =>
+          `<button class="chip${state.selectedEras.has(era) ? ' active' : ''}" data-era="${era}">${era}</button>`
+        ).join('');
+      }
+    }
+
+    // ===== POSTER FETCHING =====
+    async function applyPoster(item) {
+      const id = getItemId(item);
+      const target = document.getElementById(`poster-${id}`);
+      if (!target) return;
+
+      if (posterCache[id] !== undefined) {
+        if (posterCache[id] === 'no-poster') {
+          target.classList.add("no-poster");
+          target.innerText = item.title;
+        } else {
+          target.style.backgroundImage = `url('${posterCache[id]}')`;
+          target.classList.add("loaded");
+        }
+        return;
+      }
+
+      const endpoint = item.type === "Movie" ? "movie" : "tv";
+      const query = encodeURIComponent(item.title);
+      const url = `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${query}&year=${item.year}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const result = data.results && data.results[0];
+        if (result && result.poster_path) {
+          const imgUrl = `https://image.tmdb.org/t/p/w342${result.poster_path}`;
+          posterCache[id] = imgUrl;
+          target.style.backgroundImage = `url('${imgUrl}')`;
+          target.classList.add("loaded");
+        } else {
+          posterCache[id] = 'no-poster';
+          target.classList.add("no-poster");
+          target.innerText = item.title;
+        }
+      } catch (err) {
+        posterCache[id] = 'no-poster';
+        target.classList.add("no-poster");
+        target.innerText = item.title;
+      }
+    }
+
+    // ===== EVENT HANDLERS =====
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.activeTab = btn.dataset.type;
+        state.selectedEras.clear();
+        renderEraChips();
+        render();
+      });
+    });
+
+    document.getElementById('category-chips').addEventListener('click', (e) => {
+      if (!e.target.classList.contains('chip')) return;
+      const cat = e.target.dataset.category;
+      if (state.selectedCategories.has(cat)) {
+        state.selectedCategories.delete(cat);
+        e.target.classList.remove('active');
+      } else {
+        state.selectedCategories.add(cat);
+        e.target.classList.add('active');
+      }
+      render();
+    });
+
+    document.getElementById('era-chips').addEventListener('click', (e) => {
+      if (!e.target.classList.contains('chip')) return;
+      const era = e.target.dataset.era;
+      if (state.selectedEras.has(era)) {
+        state.selectedEras.delete(era);
+        e.target.classList.remove('active');
+      } else {
+        state.selectedEras.add(era);
+        e.target.classList.add('active');
+      }
+      render();
+    });
+
+   // ===== SURPRISE ME =====
+    async function fetchPosterUrl(item) {
+      const id = getItemId(item);
+      if (posterCache[id] !== undefined) {
+        return posterCache[id] === 'no-poster' ? null : posterCache[id];
+      }
+      const endpoint = item.type === "Movie" ? "movie" : "tv";
+      const query = encodeURIComponent(item.title);
+      const url = `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${query}&year=${item.year}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const result = data.results && data.results[0];
+        if (result && result.poster_path) {
+          const imgUrl = `https://image.tmdb.org/t/p/w342${result.poster_path}`;
+          posterCache[id] = imgUrl;
+          return imgUrl;
+        }
+        posterCache[id] = 'no-poster';
+        return null;
+      } catch {
+        posterCache[id] = 'no-poster';
+        return null;
+      }
+    }
+
+    async function rollSurprise() {
+      const filtered = getFiltered();
+      if (filtered.length === 0) {
+        alert("No titles match your filters. Try removing some!");
+        return;
+      }
+      const pick = filtered[Math.floor(Math.random() * filtered.length)];
+
+      document.getElementById('overlay-title').textContent = pick.title;
+      document.getElementById('overlay-meta').textContent =
+        `${pick.year} · ${pick.category} · ${pick.type}`;
+
+      const posterDiv = document.getElementById('overlay-poster');
+      posterDiv.style.backgroundImage = '';
+      const url = await fetchPosterUrl(pick);
+      if (url) posterDiv.style.backgroundImage = `url('${url}')`;
+
+      document.getElementById('surprise-overlay').classList.remove('hidden');
+    }
+
+    function closeSurprise() {
+      document.getElementById('surprise-overlay').classList.add('hidden');
+    }
+
+    document.getElementById('surprise-btn').addEventListener('click', rollSurprise);
+    document.getElementById('overlay-roll-again').addEventListener('click', rollSurprise);
+    document.getElementById('overlay-close').addEventListener('click', closeSurprise);
+
+    // Click backdrop or press Escape to close
+    document.getElementById('surprise-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'surprise-overlay') closeSurprise();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSurprise();
+    });
+// ===== CARD TAP = TOGGLE WATCHED =====
+    document.getElementById('content').addEventListener('click', (e) => {
+      if (state.activeTab === 'Home') {
+        switchToTab('Movie');
+        return;
+      }
+      const card = e.target.closest('.card');
+      if (!card) return;
+      const id = card.dataset.id;
+      toggleWatched(id);
+      render();
+    });
+
+    // ===== INITIAL RENDER =====
+    renderCategoryChips();
+    renderEraChips();
+    render();
+  </script>
+</body>
+</html>
