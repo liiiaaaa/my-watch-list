@@ -625,6 +625,21 @@ padding: 0.6rem 1.2rem;
     </div>
   </div>
   <script>
+// ===== LIGHT PASSWORD GATE =====
+    (function() {
+      const PASSWORD = “28009”; 
+      const STORAGE_KEY = "watchlist-auth";
+
+      if (sessionStorage.getItem(STORAGE_KEY) === "ok") return;
+
+      const entered = prompt("What's the password?");
+      if (entered === PASSWORD) {
+        sessionStorage.setItem(STORAGE_KEY, "ok");
+      } else {
+        document.body.innerHTML = '<p style="font-family:Fraunces,serif;font-style:italic;padding:3rem;text-align:center;color:#7A6E62">Wrong password. Refresh and try again.</p>';
+        throw new Error("Access denied");
+      }
+    })();
 
     const TMDB_API_KEY = "2eb56c59812008f2b5eea7b900b4fc0d";
 // ===== WATCHED STATE (saved per device) =====
